@@ -8,7 +8,7 @@ In this project you will build such a pipeline.
 
 ## Links
 - Wandb Project:  https://wandb.ai/mandihanway/nyc_airbnb
-- Readme: https://github.com/mandi1120/Project-Build-an-ML-Pipeline-Starter/blob/main/README.md
+- Github: https://github.com/mandi1120/Project-Build-an-ML-Pipeline-Starter
 
 
 ## Table of contents
