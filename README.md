@@ -1,80 +1,120 @@
-# Build an ML Pipeline for Short-Term Rental Prices in NYC
+# WGU Udacity Data Analyst Nanodegree <br>Machine Learning DevOps <br>Build an ML Pipeline for Short-Term Rental Prices in NYC  
+### By: Amanda Hanway, 1/21/2024 
+
+## Introduction 
+The project was created as part of the Udacity Machine Learning DevOps course. 
+The starter repository included some pre-implemented re-usable components in order to simulate
+a real-world situation and to focus on the ML DevOps information covered in the course.
+
+## Project Description
 You are working for a property management company renting rooms and properties for short periods of 
 time on various rental platforms. You need to estimate the typical price for a given property based 
 on the price of similar properties. Your company receives new data in bulk every week. The model needs 
 to be retrained with the same cadence, necessitating an end-to-end pipeline that can be reused.
 
-In this project you will build such a pipeline.
-
-## Links
-- Wandb Project:  https://wandb.ai/mandihanway/nyc_airbnb
-- Github: https://github.com/mandi1120/Project-Build-an-ML-Pipeline-Starter
-
-
 ## Table of contents
-
 - [Preliminary steps](#preliminary-steps)
-  * [Fork the Starter Kit](#fork-the-starter-kit)
-  * [Create environment](#create-environment)
-  * [Get API key for Weights and Biases](#get-api-key-for-weights-and-biases)
+  * [Environment Setup](#environment-setup)
   * [The configuration](#the-configuration)
   * [Running the entire pipeline or just a selection of steps](#Running-the-entire-pipeline-or-just-a-selection-of-steps)
   * [Pre-existing components](#pre-existing-components)
 
 ## Preliminary steps
-### Fork the Starter kit
-Go to [https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter](https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter)
-and click on `Fork` in the upper right corner. This will create a fork in your Github account, i.e., a copy of the
-repository that is under your control. Now clone the repository locally so you can start working on it:
+Fork the Started kit from: 
+[https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter](https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter)
 
+Clone the repository:
 ```
 git clone https://github.com/[your github username]/Project-Build-an-ML-Pipeline-Starter.git
 ```
 
 and go into the repository:
-
 ```
 cd Project-Build-an-ML-Pipeline-Starter
 ```
-Commit and push to the repository often while you make progress towards the solution. Remember 
-to add meaningful commit messages.
 
-### Create environment
-Make sure to have conda installed and ready, then create a new environment using the ``environment.yaml``
-file provided in the root of the repository and activate it:
+Set up a Weights and Biases account: https://wandb.ai/
 
-```bash
-> conda env create -f environment.yml
-> conda activate nyc_airbnb_dev
+## Environment Setup
+The first hurdle was getting the code to run on my personal computer. The following steps 
+allowed me to set up the environment on a Windows 11 OS. 
+
+- Install WSL: https://docs.microsoft.com/en-us/windows/wsl/install-win10
+- Navigate to the repository folder
+- Shift + right click on folder name
+- Click "open linux shell here"
+ 
+- Install anaconda:    
+     - Reference: https://www.reddit.com/r/wsl2/comments/120f2uy/why_cant_we_use_conda_installed_in_windows_on_wsl2/
+     - Run: wget https://repo.anaconda.com/archive/Anaconda3-2023.03-Linux-x86_64.sh
+     - After download run: bash Anaconda3-2023.03-Linux-x86_64.sh
+     - Close and reopen terminal after install
+
+- Create udacity environment:
+     - Run: conda create --name udacity python=3.8 mlflow jupyter pandas matplotlib requests -c conda-forge
+     - Run: conda activate udacity (or source activate udacity)
+     - See package versions run: conda list
+     - If need to start over run: conda env remove -n udacity
+
+- Install, log in and test weights and biases
+     - Run: pip install wandb
+     - Run: wandb login
+     - Follow instructions to get and paste API key from https://wandb.ai/authorize
+     - Run:
+          - source activate udacity
+          - echo "wandb test" > wandb_test
+          - wandb artifact put -n testing/artifact_test wandb_test
+
+- Test Mlflow
+     - Run: mlflow --help
+
+- Set up project environment
+     - Run: conda env create -f environment.yml
+     - Run: conda activate nyc_airbnb_dev
+
+- Fix issue of being stuck on "Solving environment:" status
+     - Reference: https://knowledge.udacity.com/questions/904948
+          - specify conda-forge:: explicitly in front of all packages in environment.yml file
+     - Reference: https://knowledge.udacity.com/questions/1009530
+          - Update Conda by running: conda update -n base -c defaults conda
+          - Clear the cache and recreate it by running: conda clean --all
+
+- Fix error "Solving environment: / Killed"
+     - References:
+     - https://stackoverflow.com/questions/74566580/why-is-conda-create-env-killed
+     - https://askubuntu.com/questions/178712/how-to-increase-swap-space
 ```
+# Resize Swap to 8GB
+# Turn swap off
+# This moves stuff in swap to the main memory and might take several minutes
+sudo swapoff -a
 
-### Get API key for Weights and Biases
-Let's make sure we are logged in to Weights & Biases. Get your API key from W&B by going to 
-[https://wandb.ai/authorize](https://wandb.ai/authorize) and click on the + icon (copy to clipboard), 
-then paste your key into this command:
+# Create an empty swapfile
+# Note that "1G" is basically just the unit and count is an integer.
+# Together, they define the size. In this case 20GB.
+sudo dd if=/dev/zero of=/swapfile bs=1G count=20
 
-```bash
-> wandb login [your API key]
+# Set the correct permissions
+sudo chmod 0600 /swapfile
+sudo mkswap /swapfile  # Set up a Linux swap area
+sudo swapon /swapfile  # Turn the swap on
+
+# Check if it worked
+grep Swap /proc/meminfo
+
+# Make it permanent (persist on restarts)
+# Add this line to the end of your /etc/fstab:
+/swapfile swap swap sw 0 0
 ```
-
-You should see a message similar to:
-```
-wandb: Appending key for api.wandb.ai to your netrc file: /home/[your username]/.netrc
-```
-
 
 ### The configuration
-As usual, the parameters controlling the pipeline are defined in the ``config.yaml`` file defined in
+The parameters controlling the pipeline are defined in the ``config.yaml`` file defined in
 the root of the starter kit. We will use Hydra to manage this configuration file. 
-Open this file and get familiar with its content. Remember: this file is only read by the ``main.py`` script 
-(i.e., the pipeline) and its content is
+This file is only read by the ``main.py`` script (i.e., the pipeline) and its content is
 available with the ``go`` function in ``main.py`` as the ``config`` dictionary. For example,
 the name of the project is contained in the ``project_name`` key under the ``main`` section in
 the configuration file. It can be accessed from the ``go`` function as 
 ``config["main"]["project_name"]``.
-
-NOTE: do NOT hardcode any parameter when writing the pipeline. All the parameters should be 
-accessed from the configuration file.
 
 ### Running the entire pipeline or just a selection of steps
 In order to run the pipeline when you are developing, you need to be in the root of the starter kit, 
@@ -130,26 +170,7 @@ You can see the parameters that they require by looking into their `MLproject` f
 - `get_data`: downloads the data. [MLproject](https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter/blob/main/components/get_data/MLproject)
 - `train_val_test_split`: segrgate the data (splits the data) [MLproject](https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter/blob/main/components/train_val_test_split/MLproject)
 
-## In case of errors
-When you make an error writing your `conda.yml` file, you might end up with an environment for the pipeline or one
-of the components that is corrupted. Most of the time `mlflow` realizes that and creates a new one every time you try
-to fix the problem. However, sometimes this does not happen, especially if the problem was in the `pip` dependencies.
-In that case, you might want to clean up all conda environments created by `mlflow` and try again. In order to do so,
-you can get a list of the environments you are about to remove by executing:
 
-```
-> conda info --envs | grep mlflow | cut -f1 -d" "
-```
-
-If you are ok with that list, execute this command to clean them up:
-
-**_NOTE_**: this will remove *ALL* the environments with a name starting with `mlflow`. Use at your own risk
-
-```
-> for e in $(conda info --envs | grep mlflow | cut -f1 -d" "); do conda uninstall --name $e --all -y;done
-```
-
-This will iterate over all the environments created by `mlflow` and remove them.
 
 
 ## License
