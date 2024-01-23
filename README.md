@@ -1,25 +1,47 @@
-# WGU Udacity Data Analyst Nanodegree <br>Machine Learning DevOps <br>Build an ML Pipeline for Short-Term Rental Prices in NYC  
+# WGU Udacity Data Analyst Nanodegree <br>Machine Learning DevOps - Build an ML Pipeline <br>for Short-Term Rental Prices in NYC  
 ### By: Amanda Hanway, 1/21/2024 
 
 ## Introduction 
-The project was created as part of the Udacity Machine Learning DevOps course. 
-The starter repository included some pre-implemented re-usable components in order to simulate
-a real-world situation and to focus on the ML DevOps information covered in the course.
+The project was created as part of the Udacity Machine Learning DevOps course.   
+The starter repository included some pre-implemented re-usable components in order to simulate  
+a real-world situation and to focus on the ML DevOps information covered in the course.  
 
 ## Project Description
-You are working for a property management company renting rooms and properties for short periods of 
-time on various rental platforms. You need to estimate the typical price for a given property based 
-on the price of similar properties. Your company receives new data in bulk every week. The model needs 
-to be retrained with the same cadence, necessitating an end-to-end pipeline that can be reused.
+You are working for a property management company renting rooms and properties for short periods of  
+time on various rental platforms. You need to estimate the typical price for a given property based  
+on the price of similar properties. Your company receives new data in bulk every week. The model needs   
+to be retrained with the same cadence, necessitating an end-to-end pipeline that can be reused.  
 
-## Table of contents
+## Links
+- Weights and Biases Project Link: https://wandb.ai/mandihanway/nyc_airbnb  
+- Main Program: [Main.py](main.py)
+
+## Steps
+- First, I implemented code in various files throughout the repository per instructions  
+- Then I ran each step of the ML pipline
+![Pipeline](images/wandb_lineage.png)
+```bash
+> mlflow run . -P steps=download
+> mlflow run . -P steps=basic_cleaning
+> mlflow run . -P steps=data_check
+> mlflow run . -P steps=data_split
+> mlflow run . -P steps=train_random_forest
+```
+- 
+- 
+- 
+  
+<br>
+  
+## Setup Details   
+### Table of contents
 - [Preliminary steps](#preliminary-steps)
-  * [Environment Setup](#environment-setup)
-  * [The configuration](#the-configuration)
-  * [Running the entire pipeline or just a selection of steps](#Running-the-entire-pipeline-or-just-a-selection-of-steps)
-  * [Pre-existing components](#pre-existing-components)
+- [Environment Setup](#environment-setup)
+- [The configuration](#the-configuration)
+- [Running the entire pipeline or just a selection of steps](#Running-the-entire-pipeline-or-just-a-selection-of-steps)
+- [Pre-existing components](#pre-existing-components)
 
-## Preliminary steps
+### Preliminary steps  
 Fork the Started kit from: 
 [https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter](https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter)
 
@@ -35,9 +57,9 @@ cd Project-Build-an-ML-Pipeline-Starter
 
 Set up a Weights and Biases account: https://wandb.ai/
 
-## Environment Setup
+### Environment Setup
 The first hurdle was getting the code to run on my personal computer. The following steps 
-allowed me to set up the environment on a Windows 11 OS. 
+allowed me to set up the environment on a Windows 11 OS.   
 
 - Install WSL: https://docs.microsoft.com/en-us/windows/wsl/install-win10
 - Navigate to the repository folder
@@ -170,9 +192,5 @@ You can see the parameters that they require by looking into their `MLproject` f
 - `get_data`: downloads the data. [MLproject](https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter/blob/main/components/get_data/MLproject)
 - `train_val_test_split`: segrgate the data (splits the data) [MLproject](https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter/blob/main/components/train_val_test_split/MLproject)
 
-
-
-
-## License
-
+### License
 [License](LICENSE.txt)
