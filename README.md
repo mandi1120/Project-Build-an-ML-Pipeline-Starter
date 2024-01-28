@@ -20,17 +20,48 @@ to be retrained with the same cadence, necessitating an end-to-end pipeline that
 - First, I implemented code in various files throughout the repository per instructions  
 - Then I ran each step of the ML pipline
 ![Pipeline](images/wandb_lineage.png)
+1. Download data and load into into Weights & Biases
 ```bash
 > mlflow run . -P steps=download
-> mlflow run . -P steps=basic_cleaning
-> mlflow run . -P steps=data_check
-> mlflow run . -P steps=data_split
-> mlflow run . -P steps=train_random_forest
 ```
-- 
-- 
-- 
-  
+2. Apply cleaning steps to remove outliers and null values
+```bash
+> mlflow run . -P steps=basic_cleaning
+```
+3. Run a few checks to ensure the dataset is valid 
+```bash
+> mlflow run . -P steps=data_check
+```
+4. Split the data into training and test datasets  
+```bash
+> mlflow run . -P steps=data_split
+```
+5. Train the model with varying hyperparameters using the Hydra multi-run feature (-m), setting the max_depth to 10, 50, and the n_estimators to 100, 200.
+```bash
+> mlflow run . \
+  -P steps=train_random_forest \
+  -P hydra_options="modeling.random_forest.max_depth=10,50 modeling.random_forest.n_estimators=100,200 -m"
+```
+6. Next I reviewed the results in Weights & Biases and selected the best model based on lowest Mean Absolute Error. I flagged this model as "prod". Then I ran the following code to test the model against the test dataset. 
+```bash
+> mlflow run . -P steps=test_regression_model
+```
+7. I copied the hyperparameters from the prod model into the config.yaml file so they become the default values. 
+8. I released the pipeline as 1.0.
+9. I trained the model on a new data sample (sample2.csv):
+```bash
+> mlflow run https://github.com/mandi1120/Project-Build-an-ML-Pipeline-Starter.git \
+             -v 1.0.0 \
+             -P hydra_options="etl.sample='sample2.csv'"
+```
+10. One of the data check tests failed. I added code to the basic_cleaning step to remove the invalid data from the dataset.
+11. I made a new release version 1.0.1 and reran the model with sample2.
+```bash
+> mlflow run https://github.com/mandi1120/Project-Build-an-ML-Pipeline-Starter.git \
+             -v 1.0.1 \
+             -P hydra_options="etl.sample='sample2.csv'"
+```
+
 <br>
   
 ## Setup Details   
