@@ -3,15 +3,10 @@
 ### By: Amanda Hanway, 1/21/2024 
 
 ## Introduction 
-The project was created as part of the Udacity Machine Learning DevOps course.   
-The starter repository included some pre-implemented re-usable components in order to simulate  
-a real-world situation and to focus on the ML DevOps information covered in the course.  
+The project was created as part of the Udacity Machine Learning DevOps course. The starter repository included some pre-implemented re-usable components in order to simulate a real-world situation and to focus on the ML DevOps information covered in the course.  
 
 ## Project Description
-You are working for a property management company renting rooms and properties for short periods of  
-time on various rental platforms. You need to estimate the typical price for a given property based  
-on the price of similar properties. Your company receives new data in bulk every week. The model needs   
-to be retrained with the same cadence, necessitating an end-to-end pipeline that can be reused.  
+You are working for a property management company renting rooms and properties for short periods of time on various rental platforms. You need to estimate the typical price for a given property based on the price of similar properties. Your company receives new data in bulk every week. The model needs to be retrained with the same cadence, necessitating an end-to-end pipeline that can be reused.  
 
 ## Links
 - Weights and Biases Project Link: https://wandb.ai/mandihanway/nyc_airbnb  
@@ -91,8 +86,7 @@ cd Project-Build-an-ML-Pipeline-Starter
 Set up a Weights and Biases account: https://wandb.ai/
 
 ### Environment Setup
-The first hurdle was getting the code to run on my personal computer. The following steps 
-allowed me to set up the environment on a Windows 11 OS.   
+The first hurdle was getting the code to run on my personal computer. The following steps allowed me to set up the environment on a Windows 11 OS.   
 
 - Install WSL: https://docs.microsoft.com/en-us/windows/wsl/install-win10
 - Navigate to the repository folder
@@ -163,27 +157,18 @@ grep Swap /proc/meminfo
 ```
 
 ### The configuration
-The parameters controlling the pipeline are defined in the ``config.yaml`` file defined in
-the root of the starter kit. We will use Hydra to manage this configuration file. 
-This file is only read by the ``main.py`` script (i.e., the pipeline) and its content is
-available with the ``go`` function in ``main.py`` as the ``config`` dictionary. For example,
-the name of the project is contained in the ``project_name`` key under the ``main`` section in
-the configuration file. It can be accessed from the ``go`` function as 
+The parameters controlling the pipeline are defined in the ``config.yaml`` file defined in the root of the starter kit. We will use Hydra to manage this configuration file. 
+This file is only read by the ``main.py`` script (i.e., the pipeline) and its content is available with the ``go`` function in ``main.py`` as the ``config`` dictionary. For example, the name of the project is contained in the ``project_name`` key under the ``main`` section in the configuration file. It can be accessed from the ``go`` function as 
 ``config["main"]["project_name"]``.
 
 ### Running the entire pipeline or just a selection of steps
-In order to run the pipeline when you are developing, you need to be in the root of the starter kit, 
-then you can execute as usual:
-
+In order to run the pipeline when you are developing, you need to be in the root of the starter kit, then you can execute as usual:
 ```bash
 >  mlflow run .
 ```
 This will run the entire pipeline.
 
-When developing it is useful to be able to run one step at the time. Say you want to run only
-the ``download`` step. The `main.py` is written so that the steps are defined at the top of the file, in the 
-``_steps`` list, and can be selected by using the `steps` parameter on the command line:
-
+When developing it is useful to be able to run one step at the time. Say you want to run only the ``download`` step. The `main.py` is written so that the steps are defined at the top of the file, in the ``_steps`` list, and can be selected by using the `steps` parameter on the command line:
 ```bash
 > mlflow run . -P steps=download
 ```
@@ -191,10 +176,7 @@ If you want to run the ``download`` and the ``basic_cleaning`` steps, you can si
 ```bash
 > mlflow run . -P steps=download,basic_cleaning
 ```
-You can override any other parameter in the configuration file using the Hydra syntax, by
-providing it as a ``hydra_options`` parameter. For example, say that we want to set the parameter
-modeling -> random_forest -> n_estimators to 10 and etl->min_price to 50:
-
+You can override any other parameter in the configuration file using the Hydra syntax, by providing it as a ``hydra_options`` parameter. For example, say that we want to set the parameter modeling -> random_forest -> n_estimators to 10 and etl->min_price to 50:
 ```bash
 > mlflow run . \
   -P steps=download,basic_cleaning \
@@ -202,10 +184,7 @@ modeling -> random_forest -> n_estimators to 10 and etl->min_price to 50:
 ```
 
 ### Pre-existing components
-In order to simulate a real-world situation, we are providing you with some pre-implemented
-re-usable components. While you have a copy in your fork, you will be using them from the original
-repository by accessing them through their GitHub link, like:
-
+In order to simulate a real-world situation, we are providing you with some pre-implemented re-usable components. While you have a copy in your fork, you will be using them from the original repository by accessing them through their GitHub link, like:
 ```python
 _ = mlflow.run(
                 f"{config['main']['components_repository']}/get_data",
@@ -218,10 +197,9 @@ _ = mlflow.run(
                 },
             )
 ```
-where `config['main']['components_repository']` is set to 
-[https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter/tree/main/components](https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter/tree/main/components).
-You can see the parameters that they require by looking into their `MLproject` file:
+where `config['main']['components_repository']` is set to [https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter/tree/main/components](https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter/tree/main/components).
 
+You can see the parameters that they require by looking into their `MLproject` file:
 - `get_data`: downloads the data. [MLproject](https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter/blob/main/components/get_data/MLproject)
 - `train_val_test_split`: segrgate the data (splits the data) [MLproject](https://github.com/udacity/Project-Build-an-ML-Pipeline-Starter/blob/main/components/train_val_test_split/MLproject)
 
